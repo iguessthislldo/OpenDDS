@@ -15,6 +15,7 @@
 #include <string>
 #include <sstream>
 #include <set>
+#include <vector>
 
 #if !defined (ACE_LACKS_PRAGMA_ONCE)
 # pragma once
@@ -71,6 +72,9 @@ public:
     facets_header_name_, facets_impl_name_, lang_header_name_,
     output_dir_, tao_inc_pre_;
 
+  /// Contents of the idl_file
+  std::vector<std::string> idl_file_contents_;
+
   ///print message to all open streams
   void multicast(const char* message);
 
@@ -123,6 +127,12 @@ public:
   bool no_default_gen() const;
   void no_default_gen(bool b);
 
+  /// Returns true if not to generate *TypeSupportImpl.* files
+  bool no_impl() const;
+
+  /// Do not generate absolutely anything by default
+  void suppress_default_output();
+
   bool itl() const;
   void itl(bool b);
 
@@ -134,6 +144,9 @@ public:
 
   bool face_ts() const;
   void face_ts(bool b);
+
+  bool annotation_migration() const;
+  void annotation_migration(bool b);
 
   ACE_CString java_arg() const;
   void java_arg(const ACE_CString& str);
@@ -195,8 +208,8 @@ private:
   const char* filename_;
 
   bool java_, suppress_idl_, suppress_typecode_,
-    no_default_gen_, generate_itl_, generate_v8_,
-    generate_rapidjson_, face_ts_;
+    no_default_gen_, no_impl_, generate_itl_, generate_v8_,
+    generate_rapidjson_, face_ts_, annotation_migration_;
 
   ACE_CString export_macro_, export_include_,
     versioning_name_, versioning_begin_, versioning_end_,

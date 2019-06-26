@@ -110,9 +110,6 @@ BE_abort()
 
 namespace {
 
-/// Only warn about DCPS_DATA_TYPE once
-bool warned_dcps_data_type = false;
-
 /// generate a macro name for the #ifndef header-double-include protector
 string to_macro(const char* fn)
 {
@@ -292,23 +289,23 @@ BE_produce()
     ? BE_GlobalData::STREAM_H : BE_GlobalData::STREAM_LANG_H;
 
   ifstream idl(idl_fn);
-  const size_t buffer_sz = 512;
-  char buffer[buffer_sz];
   unsigned lineno = 0;
   bool warned_dcps_data_type = !idl_global->print_warnings();
-  while (idl) {
-    idl.getline(buffer, buffer_sz);
+  for (std::string line; std::getline(idl, line);) {
+    be_global->idl_file_contents_.push_back(line);
     lineno++;
 
-    if (!(warned_dcps_data_type || strncmp("#pragma DCPS_DATA_TYPE", buffer, 22))) {
-      be_global->warning(idl_fn, lineno, "\n"
-        "  DCPS_DATA_TYPE and DCPS_DATA_KEY pragma statements are deprecated; please\n"
-        "  use @topic, @key, @nested, and @default_nested instead. See section 2.1.1,\n"
-        "  \"Defining the Data Types\", of the OpenDDS Developer's Guide for more\n"
-        "  information.");
-      warned_dcps_data_type = true;
-    } else if (0 == strncmp("#include", buffer, 8)) { //FUTURE: account for comments?
-      string inc(buffer + 8);
+    if (!strncmp("#pragma DCPS_DATA_TYPE", line.c_str(), 22)) {
+      if (!warned_dcps_data_type) {
+        be_global->warning(idl_fn, lineno, "\n"
+          "  DCPS_DATA_TYPE and DCPS_DATA_KEY pragma statements are deprecated; please\n"
+          "  use @topic, @key, @nested, and @default_nested instead. See section 2.1.1,\n"
+          "  \"Defining the Data Types\", of the OpenDDS Developer's Guide for more\n"
+          "  information.");
+        warned_dcps_data_type = true;
+      }
+    } else if (!strncmp("#include", line.c_str(), 8)) { //FUTURE: account for comments?
+      string inc(line.c_str());
       size_t delim1 = inc.find_first_of("<\"");
       size_t delim2 = inc.find_first_of(">\"", delim1 + 1);
       string included(inc, delim1 + 1, delim2 - delim1 - 1);
@@ -374,16 +371,20 @@ BE_produce()
   }
 
   if (!java_ts_only) {
-    postprocess(be_global->header_name_.c_str(),
-                be_global->header_, BE_GlobalData::STREAM_H);
+    if (!be_global->no_impl()) {
+      postprocess(be_global->header_name_.c_str(),
+                  be_global->header_, BE_GlobalData::STREAM_H);
+    }
     if (!be_global->suppress_idl()) {
       postprocess(be_global->idl_name_.c_str(),
                   be_global->idl_, BE_GlobalData::STREAM_IDL);
     }
   }
 
-  postprocess(be_global->impl_name_.c_str(),
-              be_global->impl_, BE_GlobalData::STREAM_CPP);
+  if (!be_global->no_impl()) {
+    postprocess(be_global->impl_name_.c_str(),
+                be_global->impl_, BE_GlobalData::STREAM_CPP);
+  }
 
   if (be_global->itl()) {
     if (!BE_GlobalData::writeFile(be_global->itl_name_.c_str(), be_global->itl_.str())) {

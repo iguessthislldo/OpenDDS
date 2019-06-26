@@ -43,10 +43,12 @@ BE_GlobalData::BE_GlobalData()
   , suppress_idl_(false)
   , suppress_typecode_(false)
   , no_default_gen_(false)
+  , no_impl_(false)
   , generate_itl_(false)
   , generate_v8_(false)
   , generate_rapidjson_(false)
   , face_ts_(false)
+  , annotation_migration_(false)
   , seq_("Seq")
   , language_mapping_(LANGMAP_NONE)
   , topic_annotation_(0)
@@ -179,6 +181,9 @@ ACE_CString BE_GlobalData::sequence_suffix() const
 
 void BE_GlobalData::java(bool b)
 {
+  if (b) {
+    no_impl_ = false;
+  }
   this->java_ = b;
 }
 
@@ -189,6 +194,9 @@ bool BE_GlobalData::java() const
 
 void BE_GlobalData::no_default_gen(bool b)
 {
+  if (!b) {
+    no_impl_ = false;
+  }
   this->no_default_gen_ = b;
 }
 
@@ -209,6 +217,9 @@ bool BE_GlobalData::itl() const
 
 void BE_GlobalData::v8(bool b)
 {
+  if (b) {
+    no_impl_ = false;
+  }
   this->generate_v8_ = b;
 }
 
@@ -219,6 +230,9 @@ bool BE_GlobalData::v8() const
 
 void BE_GlobalData::rapidjson(bool b)
 {
+  if (b) {
+    no_impl_ = false;
+  }
   this->generate_rapidjson_ = b;
 }
 
@@ -235,6 +249,35 @@ void BE_GlobalData::face_ts(bool b)
 bool BE_GlobalData::face_ts() const
 {
   return this->face_ts_;
+}
+
+bool
+BE_GlobalData::no_impl() const
+{
+  return no_impl_;
+}
+
+void
+BE_GlobalData::suppress_default_output()
+{
+  no_default_gen(true);
+  no_impl_ = true;
+  suppress_idl_ = true;
+}
+
+void
+BE_GlobalData::annotation_migration(bool b)
+{
+  annotation_migration_ = b;
+  if (annotation_migration_) {
+    suppress_default_output();
+  }
+}
+
+bool
+BE_GlobalData::annotation_migration() const
+{
+  return annotation_migration_;
 }
 
 void
@@ -328,6 +371,9 @@ BE_GlobalData::parse_args(long& i, char** av)
   static const char DEFAULT_NESTED_FLAG[] = "--default-nested";
   static const size_t DEFAULT_NESTED_FLAG_SIZE = sizeof(DEFAULT_NESTED_FLAG) - 1;
 
+  static const char ANNOTATION_MIGRATION_FLAG[] = "--annotation-migration";
+  static const size_t ANNOTATION_MIGRATION_FLAG_SIZE = sizeof(ANNOTATION_MIGRATION_FLAG) - 1;
+
   switch (av[i][1]) {
   case 'o':
     idl_global->append_idl_flag(av[i + 1]);
@@ -399,6 +445,8 @@ BE_GlobalData::parse_args(long& i, char** av)
       this->export_macro(av[i] + EXPORT_FLAG_SIZE);
     } else if (!ACE_OS::strncasecmp(av[i], DEFAULT_NESTED_FLAG, DEFAULT_NESTED_FLAG_SIZE)) {
       global_default_nested_ = true;
+    } else if (!ACE_OS::strncasecmp(av[i], ANNOTATION_MIGRATION_FLAG, ANNOTATION_MIGRATION_FLAG_SIZE)) {
+      annotation_migration(true);
     } else {
       invalid_option(av[i]);
     }
@@ -699,7 +747,8 @@ BE_GlobalData::warning(const char* filename, unsigned lineno, const char* msg)
 {
   if (idl_global->print_warnings()) {
     ACE_ERROR((LM_WARNING,
-      ACE_TEXT("Warning - %C: \"%C\", line %u: %C\n"),
-      idl_global->prog_name(), filename, lineno, msg));
+      ACE_TEXT("Warning - %C: \"%C\", line %u: %C\n\n  %C\n\n"),
+      idl_global->prog_name(), filename, lineno, msg,
+      be_global->idl_file_contents_[lineno-1].c_str()));
   }
 }

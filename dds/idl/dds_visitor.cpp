@@ -42,6 +42,7 @@
 #include "rapidjson_generator.h"
 #include "langmap_generator.h"
 #include "topic_keys.h"
+#include "annotation_migration_generator.h"
 
 #include <iostream>
 #include <vector>
@@ -59,6 +60,7 @@ namespace {
   v8_generator v8_gen_;
   rapidjson_generator rj_gen_;
   langmap_generator lm_gen_;
+  annotation_migration_generator annotation_migration_gen_;
 
   template <typename T>
   void scope2vector(vector<T*>& v, UTL_Scope* s, AST_Decl::NodeType nt)
@@ -106,6 +108,9 @@ dds_visitor::dds_visitor(AST_Decl* scope, bool java_ts_only)
   if (be_global->language_mapping() != BE_GlobalData::LANGMAP_NONE) {
     gen_target_.add_generator(&lm_gen_);
     lm_gen_.init();
+  }
+  if (be_global->annotation_migration()) {
+    gen_target_.add_generator(&annotation_migration_gen_);
   }
 }
 
