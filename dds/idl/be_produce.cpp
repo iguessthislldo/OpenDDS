@@ -336,8 +336,6 @@ BE_produce()
 
   idl.close();
 
-  be_global->open_streams(idl_fn);
-
   AST_Decl* d = idl_global->root();
   AST_Root* root = AST_Root::narrow_from_decl(d);
 

@@ -73,7 +73,30 @@ BE_GlobalData::filename() const
 void
 BE_GlobalData::filename(const char* fname)
 {
-  this->filename_ = fname;
+  size_t len = strlen(fname);
+  if ((len < 5 || 0 != ACE_OS::strcasecmp(fname + len - 4, ".idl"))
+      && (len < 6 || 0 != ACE_OS::strcasecmp(fname + len - 5, ".pidl"))) {
+    ACE_ERROR((LM_ERROR, "Error - Input filename must end in \".idl\" or \".pidl\".\n"));
+    BE_abort();
+  }
+
+  filename_ = fname;
+
+  // Get name without the file extension
+  filename_base_ = fname;
+  filename_base_.erase(filename_base_.rfind('.'));
+  size_t idx = filename_base_.find_last_of("/\\"); // allow either slash
+  if (idx != string::npos) {
+    filename_base_ = filename_base_.substr(idx + 1);
+  }
+
+  header_name_ = (filename_base_ + "TypeSupportImpl.h").c_str();
+  impl_name_ = (filename_base_ + "TypeSupportImpl.cpp").c_str();
+  idl_name_ = (filename_base_ + "TypeSupport.idl").c_str();
+  itl_name_ = (filename_base_ + ".itl").c_str();
+  facets_header_name_ = (filename_base_ + "_TS.hpp").c_str();
+  facets_impl_name_ = (filename_base_ + "_TS.cpp").c_str();
+  lang_header_name_ = (filename_base_ + "C.h").c_str();
 }
 
 ACE_CString BE_GlobalData::export_macro() const
@@ -234,31 +257,6 @@ void BE_GlobalData::face_ts(bool b)
 bool BE_GlobalData::face_ts() const
 {
   return this->face_ts_;
-}
-
-void
-BE_GlobalData::open_streams(const char* filename)
-{
-  size_t len = strlen(filename);
-  if ((len < 5 || 0 != ACE_OS::strcasecmp(filename + len - 4, ".idl"))
-      && (len < 6 || 0 != ACE_OS::strcasecmp(filename + len - 5, ".pidl"))) {
-    ACE_ERROR((LM_ERROR, "Error - Input filename must end in \".idl\" or \".pidl\".\n"));
-    BE_abort();
-  }
-
-  string filebase(filename);
-  filebase.erase(filebase.rfind('.'));
-  size_t idx = filebase.find_last_of("/\\"); // allow either slash
-  if (idx != string::npos) {
-    filebase = filebase.substr(idx + 1);
-  }
-  header_name_ = (filebase + "TypeSupportImpl.h").c_str();
-  impl_name_ = (filebase + "TypeSupportImpl.cpp").c_str();
-  idl_name_ = (filebase + "TypeSupport.idl").c_str();
-  itl_name_ = (filebase + ".itl").c_str();
-  facets_header_name_ = (filebase + "_TS.hpp").c_str();
-  facets_impl_name_ = (filebase + "_TS.cpp").c_str();
-  lang_header_name_ = (filebase + "C.h").c_str();
 }
 
 void
@@ -682,4 +680,10 @@ BE_GlobalData::warn_about_dcps_data_type()
   }
   warn_about_dcps_data_type_ = false;
   return idl_global->print_warnings();
+}
+
+const std::string&
+BE_GlobalData::filename_base() const
+{
+  return filename_base_;
 }

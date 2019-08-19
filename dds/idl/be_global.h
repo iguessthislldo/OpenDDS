@@ -57,14 +57,15 @@ public:
   const char* filename() const;
   void filename(const char* fname);
 
+  /// Get name of the IDL file without directories or ext
+  const std::string& filename_base() const;
+
   ACE_CString spawn_options();
   // Command line passed to ACE_Process::spawn. Different
   // implementations in IDL and IFR backends.
 
   void parse_args(long& i, char** av);
   // Parse args that affect the backend.
-
-  void open_streams(const char* filename);
 
   std::ostringstream header_, impl_, idl_, itl_, facets_header_, facets_impl_,
     lang_header_;
@@ -200,6 +201,9 @@ public:
 private:
   /// Name of the IDL file we are processing.
   const char* filename_;
+
+  /// Name of the IDL file without directories or ext
+  std::string filename_base_;
 
   bool java_, suppress_idl_, suppress_typecode_,
     no_default_gen_, generate_itl_, generate_v8_,
