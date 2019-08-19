@@ -134,6 +134,9 @@ public:
   bool rapidjson() const;
   void rapidjson(bool b);
 
+  bool python() const;
+  void python(bool b);
+
   bool face_ts() const;
   void face_ts(bool b);
 
@@ -207,7 +210,7 @@ private:
 
   bool java_, suppress_idl_, suppress_typecode_,
     no_default_gen_, generate_itl_, generate_v8_,
-    generate_rapidjson_, face_ts_;
+    generate_rapidjson_, generate_python_, face_ts_;
 
   ACE_CString export_macro_, export_include_,
     versioning_name_, versioning_begin_, versioning_end_,

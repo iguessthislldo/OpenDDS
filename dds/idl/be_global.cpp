@@ -47,6 +47,7 @@ BE_GlobalData::BE_GlobalData()
   , generate_itl_(false)
   , generate_v8_(false)
   , generate_rapidjson_(false)
+  , generate_python_(false)
   , face_ts_(false)
   , seq_("Seq")
   , language_mapping_(LANGMAP_NONE)
@@ -249,6 +250,16 @@ bool BE_GlobalData::rapidjson() const
   return this->generate_rapidjson_;
 }
 
+void BE_GlobalData::python(bool b)
+{
+  generate_python_ = b;
+}
+
+bool BE_GlobalData::python() const
+{
+  return generate_python_;
+}
+
 void BE_GlobalData::face_ts(bool b)
 {
   this->face_ts_ = b;
@@ -348,6 +359,8 @@ BE_GlobalData::parse_args(long& i, char** av)
       be_global->v8(true);
     } else if (0 == ACE_OS::strcasecmp(av[i], "-Grapidjson")) {
       be_global->rapidjson(true);
+    } else if (0 == ACE_OS::strcasecmp(av[i], "-Gpython")) {
+      be_global->python(true);
     } else {
       invalid_option(av[i]);
     }
