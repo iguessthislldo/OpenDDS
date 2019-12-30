@@ -1,11 +1,11 @@
 # Distributed under the OpenDDS License. See accompanying LICENSE
 # file or http://www.opendds.org/license.html for details.
 #
-
-project(OpenDDS_Messenger2_cmake CXX)
 cmake_minimum_required(VERSION 3.8.2)
 
 find_package(OpenDDS)
+
+project(OpenDDS_Messenger2_cmake CXX OPENDDS_IDL)
 
 set(CMAKE_CXX_COMPILER ${OPENDDS_COMPILER})
 
@@ -30,7 +30,7 @@ endforeach()
 
 # Messenger library
 add_library(${messenger})
-set_target_properties(${messenger}
+set_target_properties(${messenger} ${dst}/Messenger.idl
   PROPERTIES OUTPUT_NAME messenger
 )
 OPENDDS_TARGET_SOURCES(${messenger} ${dst}/Messenger.idl)
