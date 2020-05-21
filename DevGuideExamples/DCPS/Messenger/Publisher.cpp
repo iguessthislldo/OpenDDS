@@ -45,6 +45,8 @@ ACE_TMAIN(int argc, ACE_TCHAR *argv[])
                        1);
     }
 
+    // tag::register_type_and_topic[]
+    // tag::register_type[]
     // Register TypeSupport (Messenger::Message)
     Messenger::MessageTypeSupport_var ts =
       new Messenger::MessageTypeSupportImpl;
@@ -55,6 +57,7 @@ ACE_TMAIN(int argc, ACE_TCHAR *argv[])
                         ACE_TEXT(" register_type failed!\n")),
                        1);
     }
+    // end::register_type[]
 
     // Create Topic (Movie Discussion List)
     CORBA::String_var type_name = ts->get_type_name();
@@ -64,6 +67,7 @@ ACE_TMAIN(int argc, ACE_TCHAR *argv[])
                                 TOPIC_QOS_DEFAULT,
                                 0,
                                 OpenDDS::DCPS::DEFAULT_STATUS_MASK);
+    // end::register_type_and_topic[]
 
     if (!topic) {
       ACE_ERROR_RETURN((LM_ERROR,

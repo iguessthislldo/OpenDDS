@@ -1,0 +1,115 @@
+= OpenDDS
+:doctype: book
+// Allow us to place Table of Contents below lead.
+:toc: macro
+:source-highlighter: coderay
+
+ifndef::opendds-is-release[]
+IMPORTANT: This copy of OpenDDS isn't a release copy, so this documentation may
+not be finalized. It may be missing documentation on new features or the
+existing documentation may be incorrect.
+endif::[]
+
+Welcome to the documentation for OpenDDS {opendds-version}! If you are just
+getting started with OpenDDS, please check out
+<<devguide-introduction,Introduction>> in the Developer's Guide.
+
+// Custom placement of Table of Contents
+toc::[]
+
+== Demo Stuff
+
+=== Include an Arbitrary Text File
+
+https://asciidoctor.org/docs/user-manual/#include-directive
+
+.Messenger.idl
+[source,none]
+----
+include::../DevGuideExamples/DCPS/Messenger/Messenger.idl[]
+----
+
+=== Include Specific Lines from a File and Use Syntax Highlighting
+
+https://asciidoctor.org/docs/user-manual/#by-tagged-regions
+
+https://asciidoctor.org/docs/user-manual/#source-code-blocks
+
+What lines to include is based on tags comments in the file (see
+`DevGuideExamples/DCPS/Messenger/Publisher.cpp`). These "regions" are named
+`register_type_and_topic` and `register_type`. Included lines can also be
+specificed by line numbers as well.
+
+.Publisher.cpp (register_type_and_topic)
+----
+include::../DevGuideExamples/DCPS/Messenger/Publisher.cpp[tags=register_type_and_topic]
+----
+
+.Publisher.cpp (register_type)
+----
+include::../DevGuideExamples/DCPS/Messenger/Publisher.cpp[tags=register_type]
+----
+
+=== Inline Graphviz Diagram
+
+https://asciidoctor.org/docs/asciidoctor-diagram/
+
+[graphviz]
+....
+digraph idl {
+  rankdir="LR";
+
+  idl_files [label="IDL Files",shape=box];
+  generated_idl_files [label="Generated IDL Files",shape=box];
+  tao_idl [shape=polygon,sides=4,skew=.4];
+  opendds_idl [shape=polygon,sides=4,skew=.4];
+  generated_cpp_files [label="Generated C++ Files",shape=box];
+  cpp_files [label="C++ Files",shape=box];
+  cpp_compiler [label="C++ Compiler",shape=polygon,sides=4,skew=.4];
+  executable_files [label="Executable Files",shape=box];
+
+  idl_files -> tao_idl -> generated_cpp_files;
+  idl_files -> opendds_idl -> generated_cpp_files;
+  opendds_idl -> generated_idl_files -> tao_idl;
+  generated_cpp_files -> cpp_compiler -> executable_files;
+  cpp_files -> cpp_compiler;
+}
+....
+
+// Developer's Guide
+include::devguide/index.adoc[leveloffset=+1]
+
+== Reference
+
+Unified reference guide for everything in OpenDDS.
+
+// leveloffset isn't working
+// include::opendds_idl.adoc[leveloffset=+1]
+
+////
+TODO copied from RST/Sphinx mockup, but not updated except for spelling.
+
+I would like there to be a definition of the public C++ API. I really can't
+see Doxygen meeting this goal between IDL and all the internal stuff it
+includes right now. For now all I can think of is manually defining it, but
+this warrants further research and discussion.
+
+Also Add:
+
+Reference guide for IDL. This would contain IDL syntax relevant to OpenDDS
+and what C++ types they map to. Also document IDL annotations here.
+
+Maybe Limited Reference Guide to MPC or at least the OpenDDS specific base
+projects and such.
+
+man page for opendds_idl (Remove opendds_idl options from devguide) ability
+to install the man page.
+////
+
+== Internal Documentation
+
+This documentation are for those who want to contribute to OpenDDS and those
+who are just curious!
+
+// TODO: Figure out how to include this better or convert to asciidoc
+// include::guidelines.md[]
