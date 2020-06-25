@@ -28,7 +28,7 @@ extern bool wait_for_acks;
 inline int
 parse_args(int argc, ACE_TCHAR *argv[])
 {
-  ACE_Get_Opt get_opts(argc, argv, ACE_TEXT("t:prw"));
+  ACE_Get_Opt get_opts(argc, argv, ACE_TEXT("t:prwlf"));
 
   OPENDDS_STRING transport_type;
   int c;
@@ -47,6 +47,14 @@ parse_args(int argc, ACE_TCHAR *argv[])
         transport_type = "tcp";
       }
 
+      break;
+    case 'l':
+      OpenDDS::DCPS::security_debug.force_auth_role =
+        OpenDDS::DCPS::SecurityDebug::FORCE_AUTH_ROLE_LEADER;
+      break;
+    case 'f':
+      OpenDDS::DCPS::security_debug.force_auth_role =
+        OpenDDS::DCPS::SecurityDebug::FORCE_AUTH_ROLE_FOLLOWER;
       break;
     case 'p':
       thread_per_connection = true;

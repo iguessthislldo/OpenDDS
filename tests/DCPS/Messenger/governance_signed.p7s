@@ -1,9 +1,9 @@
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha-256"; boundary="----5C5C1122A1B899FDE49493C0205B2C31"
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha-256"; boundary="----91029B3221D727C20DD46CB83DABFE34"
 
 This is an S/MIME signed message
 
-------5C5C1122A1B899FDE49493C0205B2C31
+------91029B3221D727C20DD46CB83DABFE34
 Content-Type: text/plain
 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -18,27 +18,27 @@ Content-Type: text/plain
       <domains>
         <id>4</id>
       </domains>
-      <allow_unauthenticated_participants>true</allow_unauthenticated_participants>
-      <enable_join_access_control>false</enable_join_access_control>
-      <discovery_protection_kind>NONE</discovery_protection_kind>
+      <allow_unauthenticated_participants>FALSE</allow_unauthenticated_participants>
+      <enable_join_access_control>TRUE</enable_join_access_control>
+      <discovery_protection_kind>ENCRYPT</discovery_protection_kind>
       <liveliness_protection_kind>NONE</liveliness_protection_kind>
-      <rtps_protection_kind>NONE</rtps_protection_kind>
+      <rtps_protection_kind>SIGN</rtps_protection_kind>
       <topic_access_rules>
         <topic_rule>
           <topic_expression>*</topic_expression>
-          <enable_discovery_protection>false</enable_discovery_protection>
-          <enable_liveliness_protection>false</enable_liveliness_protection>
-          <enable_read_access_control>false</enable_read_access_control>
-          <enable_write_access_control>false</enable_write_access_control>
+          <enable_discovery_protection>TRUE</enable_discovery_protection>
+          <enable_liveliness_protection>TRUE</enable_liveliness_protection>
+          <enable_read_access_control>FALSE</enable_read_access_control>
+          <enable_write_access_control>FALSE</enable_write_access_control>
           <metadata_protection_kind>NONE</metadata_protection_kind>
-          <data_protection_kind>NONE</data_protection_kind>
+          <data_protection_kind>ENCRYPT</data_protection_kind>
         </topic_rule>
       </topic_access_rules>
     </domain_rule>
   </domain_access_rules>
 </dds>
 
-------5C5C1122A1B899FDE49493C0205B2C31
+------91029B3221D727C20DD46CB83DABFE34
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -71,16 +71,16 @@ T2JqZWN0IENvbXB1dGluZyAoVGVzdCBQZXJtaXNzaW9ucyBDQSkxLzAtBgNVBAMM
 Jk9iamVjdCBDb21wdXRpbmcgKFRlc3QgUGVybWlzc2lvbnMgQ0EpMScwJQYJKoZI
 hvcNAQkBFhhpbmZvQG9iamVjdGNvbXB1dGluZy5jb20CCQCkjopvwK438jANBglg
 hkgBZQMEAgEFAKCB5DAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3
-DQEJBTEPFw0xODA2MTMwNTE2NTJaMC8GCSqGSIb3DQEJBDEiBCAWYH+zuWWYtcrt
-ccLvtLL3Nk3xCHh/nXx0eOyJpPO5NzB5BgkqhkiG9w0BCQ8xbDBqMAsGCWCGSAFl
+DQEJBTEPFw0yMDA2MjMwMTMwMjZaMC8GCSqGSIb3DQEJBDEiBCCouc/l67dE1t8M
+BcGG1iEyiiN85AfurQ5sitDgw4L1mzB5BgkqhkiG9w0BCQ8xbDBqMAsGCWCGSAFl
 AwQBKjALBglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqG
 SIb3DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIB
-KDANBgkqhkiG9w0BAQEFAASCAQCHTuJtQP3hkhqQEYH1/yyqwa6Oiy80KugalKYn
-4eaeuVoL1T+8T59vEmv99R8BdxJAVfjMnKTfPbRxjXh7jRKLkAI4uYq0I9b+vXo+
-IUzf7jYpM/9bvkZTkR+/M7cypqGLSPIoNdoU4FuBXvIEon9Kf7ZYVHvMrCd/7HDl
-JB8AEtMJDf6l+VYkkE7yjFrLWkQA2oLEDAFq8yrRnq440+tcYIwfs49xZKA47ctp
-bbwsrGzfA402Je/r/CGD4i5OPrkSiQBOgXLta5soKxXZphgDwwMIOGVyCsfIkNU/
-eF7udRr7Q2j8MtPb7mznNnmpINRHc35eQrNJh5WIbjRM3FpE
+KDANBgkqhkiG9w0BAQEFAASCAQCVUahQm1Qd0dfMtNnmuprV3xeek8jJR4fmOZ5L
+w2zI3k82JFoxD7iZyoFSbhRdZJeSi4SFgInhGMpva5/D8hpiFkEo56kVDY79nyqy
+T7j2eFOjy20/0+5PSCRQoCdtwp6H3X6zZhqkekoN6YDxcbXkWFQCFteWqqhhrL9e
+etq3QeUcIcaOb54aeC7Z7RHjf7jbUe11IVL8ZLsfrLxSOV8xUerrtcBDNcF02raN
+NCmtR3uNNUwffdZjhY9JkHliSLprtMrKIgD1T3mUI03aJ/hGk4D/yLWys+rgsWad
+kvMj8XBpRhRIvH8Iw7drFvz64b/WJkQ4BCOsg6kYHWw+t+OH
 
-------5C5C1122A1B899FDE49493C0205B2C31--
+------91029B3221D727C20DD46CB83DABFE34--
 

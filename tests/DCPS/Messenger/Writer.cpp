@@ -119,6 +119,8 @@ Writer::svc()
       }
 
       message.count++;
+
+      ACE_OS::sleep(1);
     }
 
   } catch (const CORBA::Exception& e) {

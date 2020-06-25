@@ -201,9 +201,9 @@ ACE_TMAIN(int argc, ACE_TCHAR *argv[])
                           ACE_TEXT(" ERROR: get_subscription_matched_status() failed!\n")),
                          EXIT_FAILURE);
       }
-      if (matches.current_count == 0 && matches.total_count > 0) {
-        break;
-      }
+      /* if (matches.current_count == 0 && matches.total_count > 0) { */
+      /*   break; */
+      /* } */
       if (ws->wait(conditions, timeout) != DDS::RETCODE_OK) {
         ACE_ERROR_RETURN((LM_ERROR,
                           ACE_TEXT("%N:%l main()")
