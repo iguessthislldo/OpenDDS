@@ -2482,7 +2482,7 @@ jobs:
         path: MPC
     - name: set up msvc env
       if: steps.cache-artifact.outputs.cache-hit != 'true'
-      uses: ilammy/msvc-dev-cmd@v1.5.0
+      uses: ilammy/msvc-dev-cmd@v1.6.0
     - name: configure OpenDDS
       if: steps.cache-artifact.outputs.cache-hit != 'true'
       shell: cmd
@@ -2557,7 +2557,7 @@ jobs:
         rm -f windows-2019_defaults_ACE_TAO.tar.xz
     - uses: ammaraskar/msvc-problem-matcher@0.1
     - name: set up msvc env
-      uses: ilammy/msvc-dev-cmd@v1.5.0
+      uses: ilammy/msvc-dev-cmd@v1.6.0
     - name: configure OpenDDS
       shell: cmd
       run: |
@@ -2744,7 +2744,7 @@ jobs:
         rm -f windows-2019_defaults_ACE_TAO.tar.xz
     - uses: ammaraskar/msvc-problem-matcher@0.1
     - name: set up msvc env
-      uses: ilammy/msvc-dev-cmd@v1.5.0
+      uses: ilammy/msvc-dev-cmd@v1.6.0
     - name: configure OpenDDS
       shell: cmd
       run: |
@@ -2934,7 +2934,7 @@ jobs:
 #        path: MPC
 #    - name: set up msvc env
 #      if: steps.cache-artifact.outputs.cache-hit != 'true'
-#      uses: ilammy/msvc-dev-cmd@v1.5.0
+#      uses: ilammy/msvc-dev-cmd@v1.6.0
 #    - name: configure OpenDDS
 #      if: steps.cache-artifact.outputs.cache-hit != 'true'
 #      shell: cmd
@@ -3009,7 +3009,7 @@ jobs:
 #        rm -f windows-2019_wchar_ACE_TAO.tar.xz
 #    - uses: ammaraskar/msvc-problem-matcher@0.1
 #    - name: set up msvc env
-#      uses: ilammy/msvc-dev-cmd@v1.5.0
+#      uses: ilammy/msvc-dev-cmd@v1.6.0
 #    - name: configure OpenDDS
 #      shell: cmd
 #      run: |
@@ -3196,7 +3196,7 @@ jobs:
 #        rm -f windows-2019_wchar_ACE_TAO.tar.xz
 #    - uses: ammaraskar/msvc-problem-matcher@0.1
 #    - name: set up msvc env
-#      uses: ilammy/msvc-dev-cmd@v1.5.0
+#      uses: ilammy/msvc-dev-cmd@v1.6.0
 #    - name: configure OpenDDS
 #      shell: cmd
 #      run: |
@@ -3386,7 +3386,7 @@ jobs:
 #        path: MPC
 #    - name: set up msvc env
 #      if: steps.cache-artifact.outputs.cache-hit != 'true'
-#      uses: ilammy/msvc-dev-cmd@v1.5.0
+#      uses: ilammy/msvc-dev-cmd@v1.6.0
 #    - name: configure OpenDDS
 #      if: steps.cache-artifact.outputs.cache-hit != 'true'
 #      shell: cmd
@@ -3467,7 +3467,7 @@ jobs:
 #        mv MPC /c/
 #    - uses: ammaraskar/msvc-problem-matcher@0.1
 #    - name: set up msvc env
-#      uses: ilammy/msvc-dev-cmd@v1.5.0
+#      uses: ilammy/msvc-dev-cmd@v1.6.0
 #    - name: configure OpenDDS
 #      shell: cmd
 #      run: |
@@ -3660,7 +3660,7 @@ jobs:
 #        mv MPC /c/
 #    - uses: ammaraskar/msvc-problem-matcher@0.1
 #    - name: set up msvc env
-#      uses: ilammy/msvc-dev-cmd@v1.5.0
+#      uses: ilammy/msvc-dev-cmd@v1.6.0
 #    - name: configure OpenDDS
 #      shell: cmd
 #      run: |
@@ -3851,7 +3851,7 @@ jobs:
         path: MPC
     - name: set up msvc env
       if: steps.cache-artifact.outputs.cache-hit != 'true'
-      uses: ilammy/msvc-dev-cmd@v1.5.0
+      uses: ilammy/msvc-dev-cmd@v1.6.0
       with:
         arch: x86
     - name: configure OpenDDS
@@ -3934,7 +3934,7 @@ jobs:
         mv MPC /c/
     - uses: ammaraskar/msvc-problem-matcher@0.1
     - name: set up msvc env
-      uses: ilammy/msvc-dev-cmd@v1.5.0
+      uses: ilammy/msvc-dev-cmd@v1.6.0
       with:
         arch: x86
     - name: configure OpenDDS
@@ -4135,7 +4135,7 @@ jobs:
         mv MPC /c/
     - uses: ammaraskar/msvc-problem-matcher@0.1
     - name: set up msvc env
-      uses: ilammy/msvc-dev-cmd@v1.5.0
+      uses: ilammy/msvc-dev-cmd@v1.6.0
       with:
         arch: x86
     - name: configure OpenDDS
@@ -4333,7 +4333,7 @@ jobs:
 #        path: MPC
 #    - name: set up msvc env
 #      if: steps.cache-artifact.outputs.cache-hit != 'true'
-#      uses: ilammy/msvc-dev-cmd@v1.5.0
+#      uses: ilammy/msvc-dev-cmd@v1.6.0
 #    - name: configure OpenDDS
 #      if: steps.cache-artifact.outputs.cache-hit != 'true'
 #      shell: cmd
@@ -4414,7 +4414,7 @@ jobs:
 #        mv MPC /c/
 #    - uses: ammaraskar/msvc-problem-matcher@0.1
 #    - name: set up msvc env
-#      uses: ilammy/msvc-dev-cmd@v1.5.0
+#      uses: ilammy/msvc-dev-cmd@v1.6.0
 #    - name: configure OpenDDS
 #      shell: cmd
 #      run: |
@@ -4608,7 +4608,7 @@ jobs:
 #        mv MPC /c/
 #    - uses: ammaraskar/msvc-problem-matcher@0.1
 #    - name: set up msvc env
-#      uses: ilammy/msvc-dev-cmd@v1.5.0
+#      uses: ilammy/msvc-dev-cmd@v1.6.0
 #    - name: configure OpenDDS
 #      shell: cmd
 #      run: |
