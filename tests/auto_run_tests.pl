@@ -14,10 +14,10 @@ use lib "$ACE_ROOT/bin";
 use lib "$DDS_ROOT/bin";
 use PerlDDS::Run_Test;
 
+use lib "$DDS_ROOT/tools/scripts/modules/";
+use run_command;
+
 use Getopt::Long;
-use Cwd;
-use POSIX qw(SIGINT);
-use File::Temp qw(tempfile);
 
 use constant windows => $^O eq "MSWin32";
 
@@ -26,72 +26,12 @@ sub cd {
     chdir($dir) or die "auto_run_tests.pl: Error: Cannot chdir to $dir: $!";
 }
 
-sub run_command {
-    my $what = shift;
-    my $command = shift;
-    my %args = (
-        capture_stdout => undef,
-        verbose => undef,
-        dry_run => undef,
-        @_,
+sub run_cmd {
+    my $test_name = shift;
+    return run_command::run_command(@_,
+        name => $test_name,
+        script_name => 'auto_run_tests',
     );
-    my $capture_stdout = $args{capture_stdout};
-    my $verbose = $args{verbose} // $args{dry_run};
-    my $dry_run = $args{dry_run};
-
-    if ($verbose) {
-        my $cwd = getcwd();
-        print "In \"$cwd\" ", $dry_run ? "would run" : "running", ":\n    $command\n";
-        return (0, 0) if ($dry_run);
-    }
-
-    my $saved_stdout;
-    my $tmp_fd;
-    my $tmp_path;
-
-    if (defined($capture_stdout)) {
-        ($tmp_fd, $tmp_path) = File::Temp::tempfile(UNLINK => 1);
-        open($saved_stdout, '>&', STDOUT);
-        open(STDOUT, '>&', $tmp_fd);
-    }
-
-    my $failed = system($command) ? 1 : 0;
-    my $system_status = $?;
-    my $system_error = $!;
-    my $ran = $system_status != -1;
-
-    if (defined($capture_stdout)) {
-        open(STDOUT, '>&', $saved_stdout);
-        close($tmp_fd);
-    }
-
-    my $exit_status = 0;
-    if ($failed) {
-        $exit_status = $system_status >> 8;
-        my $signal = $system_status & 127;
-        die("auto_run_tests.pl: \"$what\" was interrupted") if ($signal == SIGINT);
-        my $coredump = $system_status & 128;
-        my $error_message;
-        if (!$ran) {
-            $error_message = "failed to run: $system_error";
-        }
-        elsif ($signal) {
-            $error_message = sprintf("exited on signal %d", ($signal));
-            $error_message .= " and created coredump" if ($coredump);
-        }
-        else {
-            $error_message = sprintf("returned with status %d", $exit_status);
-        }
-        print STDERR "auto_run_tests.pl: Error: \"$what\" $error_message\n";
-    }
-
-    if (defined($capture_stdout) && $ran) {
-        open($tmp_fd, $tmp_path);
-        ${$capture_stdout} = do { local $/; <$tmp_fd> };
-        close($tmp_fd);
-    }
-
-    return ($failed, $exit_status);
 }
 
 sub mark_test_start {
@@ -115,7 +55,7 @@ sub run_test {
     my $command = shift;
 
     my $start_time = time();
-    my ($failed, $exit_status) = run_command($name, $command, @_);
+    my ($failed, $exit_status) = run_cmd($name, $command, @_);
     mark_test_finish($name, time() - $start_time, $exit_status);
     exit(1) if ($failed && $stop_on_fail);
 }
@@ -396,9 +336,9 @@ if ($cmake) {
         push(@cmd, "--build-config $cmake_build_cfg");
     }
     if ($list_tests) {
-        run_command($fake_name, join(' ', @cmd));
+        # TODO
     } else {
-        run_test($fake_name,  join(' ', @cmd), verbose => 1);
+        run_test($fake_name, \@cmd, verbose => 1);
 
         $fake_name = "Process CMake Test Results";
         mark_test_start($fake_name);

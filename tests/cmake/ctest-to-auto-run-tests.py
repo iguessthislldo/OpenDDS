@@ -17,6 +17,9 @@ from pathlib import Path
 from argparse import ArgumentParser
 from base64 import b64decode
 import zlib
+import subprocess
+import json
+
 
 template = '''\
 
@@ -28,6 +31,7 @@ The following is the actual output:
 {output}
 auto_run_tests_finished: {art_name} Time:{art_time}s Result:{art_result}
 '''
+
 
 def get_named_measurement(test_node, name):
     for node in test_node.findall('./Results/NamedMeasurement'):
@@ -50,6 +54,18 @@ def fix_ctest_path(abs_source_path, path):
     if drive and path.upper().startswith(drive[0].upper() + '_'):
         path = path[2:]
     return path
+
+
+def get_cmake_source_path(build_path):
+    path = Path(path)
+    if not path.is_absolute():
+        path = abs_source_path / abs_test_path
+    if abs_test_path.name == 'build':
+        abs_test_path = abs_test_path.parent
+    cmakelists = abs_test_path / 'CMakeLists.txt'
+    if not cmakelists.is_file():
+        raise FileNotFoundError('"{}" was not found'.format(cmakelists))
+    return test_path_prefix / relative_to(abs_test_path, source_path)
 
 
 def generate_test_results(build_path, source_path, debug=False):
@@ -110,15 +126,7 @@ def generate_test_results(build_path, source_path, debug=False):
 
         # Find the relative path to the directory with the test's CMakeLists
         # file from source_path.
-        abs_test_path = Path(results['path'])
-        if not abs_test_path.is_absolute():
-            abs_test_path = abs_source_path / abs_test_path
-        if abs_test_path.name == 'build':
-            abs_test_path = abs_test_path.parent
-        cmakelists = abs_test_path / 'CMakeLists.txt'
-        if not cmakelists.is_file():
-            raise FileNotFoundError('"{}" was not found'.format(cmakelists))
-        test_path = test_path_prefix / relative_to(abs_test_path, source_path)
+        test_path = get_cmake_source_path(results['path'])
 
         command_parts = [s.strip('"') for s in results['command'].split(' ')[1:]]
         try:
@@ -131,7 +139,7 @@ def generate_test_results(build_path, source_path, debug=False):
         results['art_name'] = '{}/{}'.format(test_path.as_posix(), ' '.join(command_parts))
         # Exit Value isn't included if the test passed
         results['art_result'] = 0 if results['passed'] else results['exit_value']
-        results['art_time'] = time=int(results['exec_time'])
+        results['art_time'] = int(results['exec_time'])
 
         if debug:
             copy = results.copy()
@@ -143,12 +151,25 @@ def generate_test_results(build_path, source_path, debug=False):
         else:
             print(template.format(**results))
 
+
+def list_tests(build_path):
+    test_info = json.loads(subprocess.check_output(
+        ['ctest', '--show-only=json-v1'], cwd=str(build_path)).decode('utf-8'))
+    print(test_info)
+
+
 if __name__ == "__main__":
     arg_parser = ArgumentParser(description=__doc__)
     arg_parser.add_argument('source_path', metavar='SOURCE_PATH', type=Path)
     arg_parser.add_argument('build_path', metavar='BUILD_PATH', type=Path)
-    arg_parser.add_argument('--debug', action='store_true', default=False)
+    arg_parser.add_argument('--debug', action='store_true')
+    arg_parser.add_argument('--list', action='store_true')
     args = arg_parser.parse_args()
-    generate_test_results(args.build_path, args.source_path, args.debug)
+
+    if args.list:
+        list_tests(args.build_path)
+    else:
+        generate_test_results(args.build_path, args.source_path, args.debug)
+
 
 # vim: expandtab:ts=4:sw=4
