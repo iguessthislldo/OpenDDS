@@ -17,6 +17,7 @@ use Storable qw/dclone/;
 
 use LWP::UserAgent;
 use Net::SFTP::Foreign;
+# use Net::OpenSSH;
 use Time::Piece;
 use Pithub;
 
@@ -207,6 +208,7 @@ sub help {
     # When this is ready also remove fixed skip on RTD step
     # "  READ_THE_DOCS_TOKEN    Access token for Read the Docs Admin\n" .
     "  SFTP_USERNAME          SFTP Username\n" .
+    # "  DOXY_USERNAME          User on SFTP server that hosts the Doxygen\n" .
     "  SFTP_HOST              SFTP Server Address\n" .
     "\n" .
     "Step Expressions\n" .
@@ -787,6 +789,20 @@ sub new_sftp {
 
   return $sftp;
 }
+
+# sub new_ssh {
+#   my $settings = shift();
+
+#   my $ssh = Net::SFTP::Foreign->new(
+#     $settings->{sftp_host},
+#     user => $settings->{doxy_user},
+#   );
+
+#   $sftp->setcwd($settings->{sftp_base_dir});
+#   $sftp->setcwd($sftp_downloads_path);
+
+#   return $sftp;
+# }
 
 sub get_actions_url {
   my $settings = shift();
@@ -2527,6 +2543,24 @@ sub remedy_sftp_upload {
 
 ############################################################################
 
+sub verify_update_hosted_doxygen {
+  my $settings = shift();
+
+  return scalar(@missing) ? 0 : 1;
+}
+
+sub message_update_hosted_doxygen {
+  return "Release needs to be uploaded to SFTP site";
+}
+
+sub remedy_update_hosted_doxygen {
+  my $settings = shift();
+
+  return 1;
+}
+
+############################################################################
+
 sub verify_github_upload {
   my $settings = shift();
   my $verified = 0;
@@ -3081,6 +3115,9 @@ else {
   if (!$skip_sftp) {
     die("SFTP_USERNAME, SFTP_HOST need to be defined")
       if (!(defined($ENV{SFTP_USERNAME}) && defined($ENV{SFTP_HOST})));
+    if (!$skip_doxygen) {
+      die("DOXY_USERNAME needs to be defined") if (!(defined($ENV{DOXY_USERNAME})));
+    }
   }
 }
 
@@ -3124,15 +3161,16 @@ my %global_settings = (
     github_token => $ENV{GITHUB_TOKEN},
     read_the_docs_token => $ENV{READ_THE_DOCS_TOKEN},
     sftp_user => $ENV{SFTP_USERNAME},
+    doxy_user => $ENV{DOXY_USERNAME},
     sftp_host => $ENV{SFTP_HOST},
     sftp_base_dir => $sftp_base_dir,
     changelog => $this_changelog,
     modified => {
-        "NEWS.md" => 1,
-        "PROBLEM-REPORT-FORM" => 1,
-        "VERSION.txt" => 1,
-        "dds/Version.h" => 1,
-        $this_changelog => 1,
+      "NEWS.md" => 1,
+      "PROBLEM-REPORT-FORM" => 1,
+      "VERSION.txt" => 1,
+      "dds/Version.h" => 1,
+      $this_changelog => 1,
     },
     skip_sftp => $skip_sftp,
     skip_devguide => $skip_devguide,
@@ -3363,6 +3401,13 @@ my @release_steps = (
     message => sub{message_sftp_upload(@_)},
     remedy => sub{remedy_sftp_upload(@_)},
     skip => $global_settings{skip_sftp},
+  },
+  {
+    name => 'Update Hosted Doxygen',
+    verify => sub{verify_update_hosted_doxygen(@_)},
+    message => sub{message_update_hosted_doxygen(@_)},
+    remedy => sub{remedy_update_hosted_doxygen(@_)},
+    skip => $global_settings{skip_doxygen} || $global_settings{skip_sftp},
   },
   {
     name => 'Upload to GitHub',
