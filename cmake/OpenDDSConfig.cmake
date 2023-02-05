@@ -87,13 +87,6 @@ set(_tao_bin_hints ${TAO_BIN_DIR})
 
 find_program(PERL perl)
 
-find_program(OPENDDS_IDL
-  NAMES
-    opendds_idl
-  HINTS
-    ${_dds_bin_hints}
-)
-
 find_program(TAO_IDL
   NAMES
     tao_idl
@@ -181,10 +174,14 @@ if(OPENDDS_SECURITY)
   list(APPEND _opendds_libs OpenDDS_QOS_XML_XSC_Handler OpenDDS_Security)
 endif()
 
-list(APPEND _all_libs ${_opendds_libs} ${_ace_libs} ${_tao_libs})
+list(APPEND _all_libs ${_ace_libs} ${_tao_libs})
 
 set(ACE_DEPS
   Threads::Threads
+)
+
+set(TAO_DEPS
+  ACE::ACE
 )
 
 macro(_OPENDDS_SYSTEM_LIBRARY name)
@@ -366,7 +363,6 @@ function(opendds_find_our_libraries_for_config config suffix)
 
   find_library_group("ACE" "${_ace_libs}")
   find_library_group("TAO" "${_tao_libs}")
-  find_library_group("OPENDDS" "${_opendds_libs}")
 endfunction()
 
 if(MSVC)
@@ -386,8 +382,6 @@ foreach(_lib ${_all_libs})
 endforeach()
 
 list(APPEND _opendds_required_deps
-  OPENDDS_DCPS_LIBRARY
-  OPENDDS_IDL
   ACE_LIBRARY
   ACE_GPERF
   TAO_LIBRARY
@@ -492,37 +486,12 @@ endfunction()
 if(OPENDDS_FOUND)
   include("${CMAKE_CURRENT_LIST_DIR}/options.cmake")
 
-  _OPENDDS_ADD_TARGET_BINARY(opendds_idl "${OPENDDS_IDL}")
   _OPENDDS_ADD_TARGET_BINARY(tao_idl "${TAO_IDL}")
   _OPENDDS_ADD_TARGET_BINARY(ace_gperf "${ACE_GPERF}")
   _OPENDDS_ADD_TARGET_BINARY(perl "${PERL}")
 
   opendds_add_library_group("ACE" "${_ace_libs}" TRUE)
   opendds_add_library_group("TAO" "${_tao_libs}" TRUE)
-  opendds_add_library_group("OpenDDS" "${_opendds_libs}" FALSE)
-
-  if(NOT TARGET OpenDDS::OpenDDS)
-    add_library(OpenDDS::OpenDDS INTERFACE IMPORTED)
-
-    set(_opendds_core_libs
-      OpenDDS::Dcps
-      OpenDDS::Multicast
-      OpenDDS::Rtps
-      OpenDDS::Rtps_Udp
-      OpenDDS::InfoRepoDiscovery
-      OpenDDS::Shmem
-      OpenDDS::Tcp
-      OpenDDS::Udp)
-
-    if(OPENDDS_SECURITY)
-      list(APPEND _opendds_core_libs OpenDDS::Security)
-    endif()
-
-    set_target_properties(OpenDDS::OpenDDS
-      PROPERTIES
-        INTERFACE_LINK_LIBRARIES "${_opendds_core_libs}")
-
-  endif()
 
   include(${CMAKE_CURRENT_LIST_DIR}/api_macros.cmake)
 

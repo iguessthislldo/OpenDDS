@@ -40,8 +40,7 @@ function(opendds_add_idl_or_header_files target scope is_generated files)
 endfunction()
 
 function(opendds_target_generated_dependencies target idl_file scope)
-  get_source_file_property(idl_ts_files ${idl_file} OPENDDS_TYPESUPPORT_IDLS)
-  set(all_idl_files ${idl_file} ${idl_ts_files})
+  set(all_idl_files ${idl_file})
 
   foreach(file ${all_idl_files})
     get_source_file_property(cpps ${file} OPENDDS_CPP_FILES)
@@ -201,14 +200,8 @@ function(opendds_target_idl_sources target)
     opendds_get_generated_idl_output(
       ${target} ${input} "${_idl_cmd_arg_-o}" output_prefix output_dir)
 
-    if (NOT _ddsidl_cmd_arg_-SI)
-      set(_cur_type_support_idl ${output_prefix}TypeSupport.idl)
-    else()
-      unset(_cur_type_support_idl)
-    endif()
-
-    set(_cur_idl_headers ${output_prefix}TypeSupportImpl.h)
-    set(_cur_idl_cpp_files ${output_prefix}TypeSupportImpl.cpp)
+    set(_cur_idl_headers)
+    set(_cur_idl_cpp_files)
 
     if(_ddsidl_cmd_arg_-GfaceTS)
       list(APPEND _cur_idl_headers "${output_prefix}_TS.hpp")
@@ -238,25 +231,11 @@ function(opendds_target_idl_sources target)
 
     _tao_append_runtime_lib_dir_to_path(_tao_extra_lib_dirs)
 
-    add_custom_command(
-      OUTPUT ${_cur_idl_outputs} ${_cur_type_support_idl} ${_cur_java_list}
-      DEPENDS opendds_idl ${DDS_ROOT}/dds/idl/IDLTemplate.txt
-      MAIN_DEPENDENCY ${abs_filename}
-      COMMAND ${CMAKE_COMMAND} -E env "DDS_ROOT=${DDS_ROOT}" "TAO_ROOT=${TAO_INCLUDE_DIR}"
-              "${_tao_extra_lib_dirs}"
-              $<TARGET_FILE:opendds_idl> -I${idl_file_dir}
-              ${_ddsidl_flags} ${file_dds_idl_flags} ${abs_filename}
-              -o "${output_dir}"
-    )
-
     set_property(SOURCE ${abs_filename} APPEND PROPERTY
       OPENDDS_CPP_FILES ${_cur_idl_cpp_files})
 
     set_property(SOURCE ${abs_filename} APPEND PROPERTY
       OPENDDS_HEADER_FILES ${_cur_idl_headers})
-
-    set_property(SOURCE ${abs_filename} APPEND PROPERTY
-      OPENDDS_TYPESUPPORT_IDLS ${_cur_type_support_idl})
 
     set_property(SOURCE ${abs_filename} APPEND PROPERTY
       OPENDDS_JAVA_OUTPUTS "@${_cur_java_list}")
@@ -271,7 +250,7 @@ function(opendds_target_idl_sources target)
           -I${idl_file_dir} # The type-support IDL will include the primary IDL file
           ${_arg_TAO_IDL_FLAGS}
           -o "${output_dir}"
-        IDL_FILES ${_cur_idl_file} ${_cur_type_support_idl})
+        IDL_FILES ${_cur_idl_file})
     endif()
 
     set_property(SOURCE ${abs_filename} PROPERTY
