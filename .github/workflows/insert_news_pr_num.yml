@@ -4,7 +4,6 @@ on:
   pull_request_target:
     paths:
       - 'docs/news.d/**'
-    types: [opened, synchronize]
 
 jobs:
   insert_news_pr_num:
