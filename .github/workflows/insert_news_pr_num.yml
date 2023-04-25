@@ -9,7 +9,7 @@ on:
 jobs:
   insert_news_pr_num:
     runs-on: ubuntu-latest
-    permissions: read-all
+    permissions: write-all
     steps:
     - name: Checkout OpenDDS
       uses: actions/checkout@v3
