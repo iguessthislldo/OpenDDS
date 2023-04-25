@@ -13,4 +13,6 @@ jobs:
     - name: Checkout OpenDDS
       uses: actions/checkout@v3
     - name: Update PR
-      run: python3 docs/news.py insert-pr-num ${{github.event.pull_request.number}}
+      run: python3 docs/news.py insert-pr-num
+      env:
+        GH_TOKEN: ${{ github.token }}
