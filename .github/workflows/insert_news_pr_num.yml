@@ -7,7 +7,6 @@ on:
 
 jobs:
   insert_news_pr_num:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions: write-all
     steps:
