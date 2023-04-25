@@ -1,10 +1,9 @@
 name: "Insert PR Number into News"
 
 on:
-  pull_request:
+  push:
     paths:
       - 'docs/news.d/**'
-    types: [closed]
 
 jobs:
   insert_news_pr_num:
