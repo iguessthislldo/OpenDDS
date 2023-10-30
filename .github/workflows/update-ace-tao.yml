@@ -9,15 +9,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  VCPKG_GIT_COMMIT: 8eb57355a4ffb410a2e94c07b4dca2dffbee8e50
-
 jobs:
   update:
     runs-on: ubuntu-22.04
     steps:
     - name: Checkout OpenDDS
       uses: actions/checkout@v4
+      with:
+        path: OpenDDS
+        submodules: true
     - name: Install Perl Dependencies
       uses: shogo82148/actions-setup-perl@v1
       with:
