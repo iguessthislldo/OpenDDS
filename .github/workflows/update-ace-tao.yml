@@ -55,8 +55,6 @@ jobs:
         body: "Releases: ${{env.ACEVERS_URLS}}"
         labels: |
           dependencies
-        team-reviewers: |
-          maintainers
     - name: Check outputs
       if: ${{ steps.cpr.outputs.pull-request-number }}
       run: |
