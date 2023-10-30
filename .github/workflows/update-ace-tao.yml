@@ -28,7 +28,7 @@ jobs:
           LWP::UserAgent
           LWP::Protocol::https
     - name: Run gitrelease.pl --update-ace-tao
-      run:
+      run: |
         cd OpenDDS
         perl tools/scripts/gitrelease.pl --update-ace-tao
         # Help make the title and message for commit and PR
@@ -51,7 +51,7 @@ jobs:
         branch: workflows/update-ace-tao
         delete-branch: true
         title: Update ACE/TAO to ${{env.ACEVERS}}
-        body: Releases: ${{env.ACEVERS_URLS}}
+        body: "Releases: ${{env.ACEVERS_URLS}}"
         labels: |
           dependencies
         team-reviewers: |
