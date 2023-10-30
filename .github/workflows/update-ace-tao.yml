@@ -30,7 +30,7 @@ jobs:
     - name: Run gitrelease.pl --update-ace-tao
       run: |
         cd OpenDDS
-        perl tools/scripts/gitrelease.pl --update-ace-tao
+        GITHUB_TOKEN=${{secrets.GITHUB_TOKEN}} perl tools/scripts/gitrelease.pl --update-ace-tao
         # Help make the title and message for commit and PR
         perl tools/scripts/modules/ini.pm acetao.ini --join ', ' '.*/version' > ../acevers
         echo "ACEVERS=$(cat ../acevers)" >> $GITHUB_ENV
@@ -41,6 +41,7 @@ jobs:
       id: cpr
       with:
         path: OpenDDS
+        token: ${{ secrets.GITHUB_TOKEN }} 
         commit-message: |
           Update ACE/TAO to ${{env.ACEVERS}}
 
