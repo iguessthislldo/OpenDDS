@@ -5,8 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to say hello
     steps:
-      # To use this repository's private action,
-      # you must check out the repository
+      - name: Install Action Dependencies
+        run: npm install @actions/core @actions/github
       - name: Checkout
         uses: actions/checkout@v4
       - name: Hello world action step
