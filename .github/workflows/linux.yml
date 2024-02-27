@@ -5,10 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     name: A job to say hello
     steps:
-      - name: Install Action Dependencies
-        run: npm install @actions/core @actions/github
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup Action
+        run: npm install
+        working-directory: ./.github/workflows/opendds-action
       - name: Hello world action step
         uses: ./.github/workflows/opendds-action
         id: hello
