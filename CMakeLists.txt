@@ -35,17 +35,20 @@ set(_OPENDDS_CMAKE_DIR "${OPENDDS_SOURCE_DIR}/cmake" CACHE INTERNAL "")
 
 # Get and build ACE/TAO if OPENDDS_ACE wasn't defined and initialize the core
 # of the CMake support in init.cmake.
-if(NOT DEFINED OPENDDS_ACE OR DEFINED ACE_IS_BEING_BUILT)
-  # This is before init.cmake so init.cmake can get the features from ACE if
-  # ACE was already built.
-  include("${_OPENDDS_CMAKE_DIR}/get_ace_tao.cmake")
-endif()
+set(OPENDDS_ACE "${OPENDDS_SOURCE_DIR}/ACE_TAO/ACE")
+set(OPENDDS_TAO "${OPENDDS_SOURCE_DIR}/ACE_TAO/TAO")
+add_subdirectory(ACE_TAO)
+# if(NOT DEFINED OPENDDS_ACE OR DEFINED ACE_IS_BEING_BUILT)
+#   # This is before init.cmake so init.cmake can get the features from ACE if
+#   # ACE was already built.
+#   include("${_OPENDDS_CMAKE_DIR}/get_ace_tao.cmake")
+# endif()
 include("${_OPENDDS_CMAKE_DIR}/init.cmake")
-if(DEFINED ACE_IS_BEING_BUILT)
-  # This is after init.cmake so ACE/TAO can be configured using the features
-  # from init.cmake.
-  include("${_OPENDDS_CMAKE_DIR}/build_ace_tao.cmake")
-endif()
+# if(DEFINED ACE_IS_BEING_BUILT)
+#   # This is after init.cmake so ACE/TAO can be configured using the features
+#   # from init.cmake.
+#   include("${_OPENDDS_CMAKE_DIR}/build_ace_tao.cmake")
+# endif()
 
 if(NOT DEFINED OPENDDS_RAPIDJSON)
   set(OPENDDS_RAPIDJSON "${OPENDDS_SOURCE_DIR}/tools/rapidjson")
@@ -74,11 +77,11 @@ target_include_directories(OpenDDS_Config
 )
 target_sources(OpenDDS_Config
   INTERFACE FILE_SET HEADERS BASE_DIRS "${config_out_dir}" FILES "${config_out_file}")
-install(TARGETS OpenDDS_Config
-  EXPORT opendds_targets
-  FILE_SET HEADERS
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
+# install(TARGETS OpenDDS_Config
+#   EXPORT opendds_targets
+#   FILE_SET HEADERS
+#     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+# )
 
 if(NOT CMAKE_CROSSCOMPILING)
   add_subdirectory(dds/DCPS) # OpenDDS_Util
@@ -89,32 +92,32 @@ if(NOT CMAKE_CROSSCOMPILING)
 endif()
 
 add_subdirectory(dds) # OpenDDS_Dcps
-add_subdirectory(dds/DCPS/transport/multicast)
+# add_subdirectory(dds/DCPS/transport/multicast)
 add_subdirectory(dds/DCPS/RTPS)
 add_subdirectory(dds/DCPS/transport/rtps_udp)
-add_subdirectory(dds/DCPS/transport/shmem)
-add_subdirectory(dds/DCPS/transport/tcp)
-add_subdirectory(dds/DCPS/InfoRepoDiscovery)
-add_subdirectory(dds/DCPS/transport/udp)
-add_subdirectory(dds/InfoRepo)
-if(OPENDDS_XERCES3)
-  add_subdirectory(dds/DCPS/QOS_XML_Handler)
-endif()
-if(OPENDDS_SECURITY)
-  add_subdirectory(dds/DCPS/security)
-  if(OPENDDS_BUILT_IN_TOPICS)
-    add_subdirectory(tools/dds/rtpsrelaylib)
-    add_subdirectory(tools/rtpsrelay)
-  endif()
-endif()
-add_subdirectory(tools/inspect)
+# add_subdirectory(dds/DCPS/transport/shmem)
+# add_subdirectory(dds/DCPS/transport/tcp)
+# add_subdirectory(dds/DCPS/InfoRepoDiscovery)
+# add_subdirectory(dds/DCPS/transport/udp)
+# add_subdirectory(dds/InfoRepo)
+# if(OPENDDS_XERCES3)
+#   add_subdirectory(dds/DCPS/QOS_XML_Handler)
+# endif()
+# if(OPENDDS_SECURITY)
+#   add_subdirectory(dds/DCPS/security)
+#   if(OPENDDS_BUILT_IN_TOPICS)
+#     add_subdirectory(tools/dds/rtpsrelaylib)
+#     add_subdirectory(tools/rtpsrelay)
+#   endif()
+# endif()
+# add_subdirectory(tools/inspect)
 
 # Installation
 set(cmake_dest "${CMAKE_INSTALL_DATAROOTDIR}/cmake/OpenDDS")
-install(EXPORT opendds_targets
-  FILE "opendds_targets.cmake"
-  DESTINATION ${cmake_dest}
-)
+# install(EXPORT opendds_targets
+#   FILE "opendds_targets.cmake"
+#   DESTINATION ${cmake_dest}
+# )
 set(config_cmake "${CMAKE_CURRENT_BINARY_DIR}/config.cmake")
 set(opendds_feature_vars)
 foreach(var ${_OPENDDS_FEATURE_VARS})

@@ -5,8 +5,8 @@ project(opendds_dcps CXX)
 set(dcps_lib_deps
   ACE::ACE
   TAO::TAO
-  TAO::PortableServer
-  TAO::BiDirGIOP
+  # TAO::PortableServer
+  # TAO::BiDirGIOP
   TAO::Valuetype
 )
 find_package(OpenDDS REQUIRED NO_DEFAULTS TAO::tao_idl OpenDDS::opendds_idl ${dcps_lib_deps})

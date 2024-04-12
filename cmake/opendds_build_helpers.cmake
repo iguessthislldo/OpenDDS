@@ -64,18 +64,18 @@ function(_opendds_library target)
   endif()
 
   if(NOT arg_NO_INSTALL)
-    install(TARGETS ${target}
-      EXPORT opendds_targets
-      LIBRARY
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        PERMISSIONS ${_opendds_exec_perms}
-      RUNTIME
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        PERMISSIONS ${_opendds_exec_perms}
-      FILE_SET HEADERS
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-      ARCHIVE DESTINATION lib
-    )
+    # install(TARGETS ${target}
+    #   EXPORT opendds_targets
+    #   LIBRARY
+    #     DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    #     PERMISSIONS ${_opendds_exec_perms}
+    #   RUNTIME
+    #     DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    #     PERMISSIONS ${_opendds_exec_perms}
+    #   FILE_SET HEADERS
+    #     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    #   ARCHIVE DESTINATION lib
+    # )
   endif()
 endfunction()
 
