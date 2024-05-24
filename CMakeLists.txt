@@ -63,17 +63,17 @@ endif()
 # opendds_build_helpers.cmake), and install it.
 set(OPENDDS_CONFIG_AUTO_STATIC_INCLUDES 1) # Always true for CMake builds
 set(config_file "dds/OpenDDSConfig.h")
-set(config_out_dir "${CMAKE_CURRENT_BINARY_DIR}/opendds_config_include")
-set(config_out_file "${config_out_dir}/${config_file}")
+set(_OPENDDS_CONFIG_DIR "${CMAKE_CURRENT_BINARY_DIR}/opendds_config_include" CACHE INTERNAL "")
+set(config_out_file "${_OPENDDS_CONFIG_DIR}/${config_file}")
 configure_file("${config_file}.in" "${config_out_file}")
 add_library(OpenDDS_Config INTERFACE)
 target_include_directories(OpenDDS_Config
   INTERFACE
-    "$<BUILD_INTERFACE:${config_out_dir}>"
+    "$<BUILD_INTERFACE:${_OPENDDS_CONFIG_DIR}>"
     "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
 )
 target_sources(OpenDDS_Config
-  INTERFACE FILE_SET HEADERS BASE_DIRS "${config_out_dir}" FILES "${config_out_file}")
+  INTERFACE FILE_SET HEADERS BASE_DIRS "${_OPENDDS_CONFIG_DIR}" FILES "${config_out_file}")
 install(TARGETS OpenDDS_Config
   EXPORT opendds_targets
   FILE_SET HEADERS
